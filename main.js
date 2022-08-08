@@ -1,9 +1,9 @@
 
 // Define a view
 var view = new ol.View({
-    projection: 'EPSG:3857',
-    center: [2814279.1728984285, 7302225.11648295],
-    zoom: 12,
+    projection: 'EPSG:4326',
+    center: [-73.99241933642752, 40.71473962899501],
+    zoom: 14,
 })
 
 //Define map
@@ -23,70 +23,53 @@ let map = new ol.Map({
     view: view,
 });
 
-//Image source
-let imgSource = new ol.source.ImageStatic({
-    attributions: '<b>boat</b>',
-    url: 'boat.jpg',
-    imageExtent: [2814107.4881669288, 7302045.967197906, 2814450.8576299283, 7302404.265767993] //map.getView().calculateExtent()
-});
+let inputJSON= {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [
+                        [
+                            -74.0097427368164,
+                            40.710442625512925
+                        ],
+                        [
+                            -74.00073051452635,
+                            40.73834794025951
+                        ],
+                        [
+                            -73.98279190063477,
+                            40.740168859407845
+                        ],
+                        [
+                            -73.98073196411133,
+                            40.72774659982564
+                        ]
+                    ]
+                }
+            }
+        ]
+}
 
-//Defining a feature
-// Adding image based on coordinates
-// LAYER -> SOURCE -> FEATURE : CO-ORDINATES and Image
-
-// Defining a feature
-var Feature = new ol.Feature({
-    geometry: new ol.geom.Point([2814279.1728984285, 7302225.11648295])
+//Vector source
+let vectorSource = new ol.source.Vector({
+    features: (new ol.format.GeoJSON().readFeatures(inputJSON))
 })
-
-var style = new ol.style.Style({
-    image: new ol.style.Icon({
-        src: 'boat.jpg',
-        scale: 0.05
+//Vector layer
+let vectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#FF0000',
+            lineJoin: 'bevel',
+            width: 5,
+            lineDash: [5,15],
+        })
     })
 })
+//Add vector layer to map
 
-Feature.setStyle(style)
-
-// Define a source
-var vectorSource = new ol.source.Vector({
-    features: [Feature]
-})
-
-// Define a layer
-var vectorLayer = new ol.layer.Vector({
-    source: vectorSource
-})
-
-// add this layer to map
 map.addLayer(vectorLayer)
-
-//Adding WMS layer to the map
-
-//Adding like a tile
-//define tile source
-var tileSource = new ol.source.TileWMS({
-    url: 'http://localhost:8080/geoserver/tiger/wms',
-    params: { 'LAYERS': 'tiger:tiger_roads', 'TILED': true },
-    serverType: 'geoserver',
-    crossOrigin: 'anonymous'
-})
-
-//define tile layer
-let tileLayer = new ol.layer.Tile({
-    source: tileSource
-})
-// adding layer to map
-map.addLayer(tileLayer);
-
-//Adding like an image
-let imageSource = new ol.source.ImageWMS({
-    url: 'http://localhost:8080/geoserver/tiger/wms',
-    params: { 'LAYERS': 'tiger:poly_landmarks'},
-    serverType: 'geoserver',
-    crossOrigin: 'anonymous'
-})
-let tileImage = new ol.layer.Image({
-    source: imageSource,
-})
-map.addLayer(tileImage);
