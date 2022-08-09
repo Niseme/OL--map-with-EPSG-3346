@@ -122,6 +122,6 @@ let heatSource = new ol.source.Vector({
 let heatLayer = new ol.layer.Heatmap({
     source: heatSource,
     radius: 50,
-    gradient: ['#ff1422', '#ad1125', '#ee0000', '#cd0111', '#aa2544']
+    gradient: ['#ff1422', '#ad1125', '#ee0000', '#cd0111', '#aa2244']
 })
 map.addLayer(heatLayer)
