@@ -105,8 +105,11 @@ let urlSource = new ol.source.Vector({
 let urlLayer = new ol.layer.Vector({
     source: urlSource,
     style: new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(255,255,255,0.4)'
+        image: new ol.style.Circle({
+            radius: 8,
+            fill: new ol.style.Fill({
+                color: 'rgba(159,100,250)'
+            }),
         }),
     })
 })
@@ -124,4 +127,12 @@ let heatLayer = new ol.layer.Heatmap({
     radius: 50,
     gradient: ['#ff1422', '#ad1125', '#ee0000', '#cd0111', '#aa2244']
 })
-map.addLayer(heatLayer)
+//map.addLayer(heatLayer)
+
+//Random street data
+
+let streetSource = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: 'streetData.geojson',
+})
+
