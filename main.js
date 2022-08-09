@@ -23,35 +23,36 @@ let map = new ol.Map({
     view: view,
 });
 
-let inputJSON= {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
-                        [
-                            -74.0097427368164,
-                            40.710442625512925
-                        ],
-                        [
-                            -74.00073051452635,
-                            40.73834794025951
-                        ],
-                        [
-                            -73.98279190063477,
-                            40.740168859407845
-                        ],
-                        [
-                            -73.98073196411133,
-                            40.72774659982564
-                        ]
+let inputJSON =
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        -74.01120185852051,
+                        40.71037756449118
+                    ],
+                    [
+                        -74.00545120239258,
+                        40.73321007823572
+                    ],
+                    [
+                        -73.98038864135742,
+                        40.73242960878483
+                    ],
+                    [
+                        -73.9859676361084,
+                        40.721957424936726
                     ]
-                }
+                ]
             }
-        ]
+        }
+    ]
 }
 
 //Vector source
@@ -66,10 +67,61 @@ let vectorLayer = new ol.layer.Vector({
             color: '#FF0000',
             lineJoin: 'bevel',
             width: 5,
-            lineDash: [5,15],
+            lineDash: [5, 15],
         })
     })
 })
 //Add vector layer to map
-
 map.addLayer(vectorLayer)
+
+//adding Vector layer as external json file
+let extSource = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: 'geom.geojson'
+})
+
+let extLayer = new ol.layer.Vector({
+    source: extSource,
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: ' rgba(142,226,136,0.6)'
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'rgba(256,226,136)',
+            width: 5
+        })
+    })
+})
+
+map.addLayer(extLayer)
+
+//adding vector layer from url
+
+let urlSource = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: 'http://localhost:8080/geoserver/tiger/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=tiger%3Apoi&maxFeatures=50&outputFormat=application%2Fjson'
+})
+
+let urlLayer = new ol.layer.Vector({
+    source: urlSource,
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(255,255,255,0.4)'
+        }),
+    })
+})
+
+map.addLayer(urlLayer)
+
+//Heatmap
+let heatSource = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: 'http://localhost:8080/geoserver/tiger/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=tiger%3Apoi&maxFeatures=50&outputFormat=application%2Fjson',
+})
+
+let heatLayer = new ol.layer.Heatmap({
+    source: heatSource,
+    radius: 50,
+    gradient: ['#ff1422', '#ad1125', '#ee0000', '#cd0111', '#aa2544']
+})
+map.addLayer(heatLayer)
